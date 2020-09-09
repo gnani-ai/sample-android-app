@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "507705926230",
+    "firebase_url": "https://voice-navigation-df478.firebaseio.com",
+    "project_id": "voice-navigation-df478",
+    "storage_bucket": "voice-navigation-df478.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507705926230:android:be4e25ae3fd792d1",
+        "android_client_info": {
+          "package_name": "com.rondaulagupu.android.voicenavigation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507705926230-9rqagjpnc2oj8713934fess0qs78q68t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rondaulagupu.android.voicenavigation",
+            "certificate_hash": "4fab3963b64f24c0510201911e1c1f1af3f94dc5"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRmti3dqkadZacu64mILSOsgyBn4Gk_YE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507705926230-0i5ctsa1lqmfmomdmaa3u6l932650uu9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

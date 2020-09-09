@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <group android:checkableBehavior="single">
+        <item android:title="My Section">
+            <menu>
+                <item
+                    android:id="@+id/account"
+                    android:icon="@drawable/ic_account"
+                    android:title="My profile" />
+                <item
+                    android:id="@+id/download_centre"
+                    android:icon="@drawable/ic_menu_slideshow"
+                    android:title="My Download Center" />
+                <item
+                    android:id="@+id/previous_queries"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="My Previous Queries" />
+            </menu>
+        </item>
+    </group>
+
+    <group>
+        <item android:title="Features">
+            <menu>
+                <item
+                    android:id="@+id/network_hospitals"
+                    android:icon="@drawable/ic_menu_share"
+                    android:title="Network Hospitals" />
+            </menu>
+        </item>
+    </group>
+
+    <group>
+        <item android:title="More">
+            <menu>
+                <item
+                    android:id="@+id/connect_to_tracker"
+                    android:title="Connect to Tracker"/>
+                <item
+                    android:id="@+id/lets_talk_health"
+                    android:title="Let's Talk Health"/>
+                <item
+                    android:id="@+id/refer_to_friends"
+                    android:title="Refer to Friends" />
+                <item
+                    android:id="@+id/feedback"
+                    android:title="My Feedback"/>
+            </menu>
+        </item>
+    </group>
+
+
+</menu>
