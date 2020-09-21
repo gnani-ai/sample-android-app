@@ -79,10 +79,8 @@ dependencies {
     implementation 'javax.annotation:javax.annotation-api:1.2'
     protobuf 'com.google.protobuf:protobuf-java:3.5.1'
 
-    //firebase
-    implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.google.firebase:firebase-storage:16.1.0'
+
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.github.gnani-ai:SpeechToText:1.0.5'
 }
-apply plugin: 'com.google.gms.google-services'
+
