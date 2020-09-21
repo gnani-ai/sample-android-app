@@ -1,26 +1,13 @@
 package com.rondaulagupu.android.voicenavigation;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -28,109 +15,50 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.gnani.speechtotext.Recorder;
+import com.gnani.speechtotext.SpeechService;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rodolfonavalon.shaperipplelibrary.ShapeRipple;
 import com.rodolfonavalon.shaperipplelibrary.model.Circle;
-import com.rondaulagupu.android.voicenavigation.utils.RecorderUtils;
 
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class MainActivityNew extends AppCompatActivity
+public class MainActivityNew extends AppCompatActivity implements SpeechService.Listener, Recorder.RecordingStatusListener
          {
 
     private static final int REQUEST_PERMISSION_CODE = 1;
     public static final String TYPE = "application/pdf";
 
 
-    @BindView(R.id.fab)
-    FloatingActionButton mRecorderButton;
+    Button mRecorderButton;
 
-    @BindView(R.id.ripple)
+
     ShapeRipple mRipple;
 
-    @BindView(R.id.textView4)
+
     TextView textView;
 
 
-    private RecorderUtils mRecorderUtils;
 
     private boolean isRecorderPressed = false;
 
 
-    private SpeechService mSpeechService;
-
-
-
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder binder) {
-            mSpeechService = SpeechService.from(binder);
-            mSpeechService.addListener(mSpeechServiceListener);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mSpeechService = null;
-        }
-    };
-
-
-
-    private final SpeechService.Listener mSpeechServiceListener =
-            new SpeechService.Listener() {
-                @Override
-                public void onSpeechRecognized(final String text, final String asr, final boolean isFinal) {
-
-                    Log.d("Transcribe Result", "onSpeechRecognized: " + text+"  "+isFinal);
-
-                  runOnUiThread(new Runnable() {
-                      @Override
-                      public void run() {
-
-
-                          textView.setText(text);
-                      }
-                  });
-
-
-                }
-
-                @Override
-                public void onError(Throwable t) {
-
-
-
-                }
-
-                @Override
-                public void onComplete() {
-
-                    try {
-
-                        Log.e("onComplete", "Called_STT");
-
-
-                    } catch (Exception e) {
-                        Log.e("", "exception", e);
-                    }
-
-                }
-
-            };
 
 
 
@@ -138,33 +66,43 @@ public class MainActivityNew extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_new);
-        ButterKnife.bind(this);
+        mRipple=(ShapeRipple)findViewById(R.id.ripple);
+        mRecorderButton=(Button)findViewById(R.id.fab);
+        textView=(TextView)findViewById(R.id.textView4);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         if (!checkPermission()) {
             requestPermission();
         }
 
-        bindService(new Intent(this, SpeechService.class), mServiceConnection, BIND_AUTO_CREATE);
+        Recorder.bind(MainActivityNew.this);
 
         mRipple.setRippleShape(new Circle());
+        mRecorderButton.setText("click & speak");
 
 
 
         mRecorderButton.setOnClickListener(v -> {
+
+            Recorder.onRecord(("hin_IN"));
+
+
             isRecorderPressed = !isRecorderPressed;
 
             if (isRecorderPressed) {
-                mRecorderUtils = new RecorderUtils(getApplicationContext(), mSpeechService);
+
                 mRipple.setVisibility(View.VISIBLE);
-                mSpeechService.startRecognizing();
-                mRecorderUtils.startRecording();
+                mRecorderButton.setText("stop");
+
             } else {
                 mRipple.setVisibility(View.INVISIBLE);
-                mRecorderUtils.stopRecording();
-                mSpeechService.finishRecognizing();
+                mRecorderButton.setText("start");
+
             }
+
         });
 
 
@@ -239,12 +177,68 @@ public class MainActivityNew extends AppCompatActivity
         return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(mServiceConnection);
-
-    }
 
 
-}
+
+
+             @Override
+             public void onRecordingStatus(final boolean status) {
+
+                 Log.e("STATUS", " " + status);
+
+                 runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+                         if (status) {
+                    System.out.println("status"+status);
+                         } else {
+                             System.out.println("status"+status);
+                         }
+                     }
+                 });
+             }
+
+             @Override
+             public void onSpeechRecognized(final String text, String asr, boolean isFinal) {
+
+                 Log.e("text", " " + text);
+                 runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+
+                         System.out.println("asr"+text);
+
+                         textView.setText(text);
+
+
+
+                     }
+                 });
+
+             }
+
+             @Override
+             public void onError(Throwable t) {
+                 Log.e("on_ERROR", " " + t);
+                 runOnUiThread(new Runnable() {
+                     @Override
+                     public void run() {
+                       //  btnS.setText("START");
+
+                         System.out.println("error"+t.toString());
+                     }
+                 });
+             }
+
+             @Override
+             protected void onDestroy() {
+                 super.onDestroy();
+
+                 Recorder.unbind(MainActivityNew.this);
+             }
+
+
+
+
+
+         }
